@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dra. Jennyfer Jimenez · Ortodoncia · CABA</title>
+  <meta name="description" content="Especialista en ortodoncia en CABA. Brackets, alineadores invisibles y ortodoncia infantil. Turnos online.">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal-50: #E1F5EE; --teal-200: #5DCAA5; --teal-400: #1D9E75;
+      --teal-600: #0F6E56; --teal-800: #085041;
+      --gray-100: #D3D1C7; --gray-400: #888780;
+      --white: #ffffff; --bg: #f8f8f6; --text: #1a1a18; --muted: #6b6b67;
+      --border: rgba(0,0,0,0.1);
+      --radius: 10px; --radius-sm: 6px;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: var(--teal-600); text-decoration: none; }
+    .logo-icon { width: 32px; height: 32px; background: var(--teal-400); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--teal-600); }
+    .btn-nav { background: var(--teal-400); color: white; border: none; border-radius: var(--radius-sm); padding: 8px 16px; font-size: 14px; cursor: pointer; transition: background .2s; }
+    .btn-nav:hover { background: var(--teal-600); }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, var(--teal-50) 0%, var(--white) 70%); padding: 56px 24px 48px; max-width: 960px; margin: 0 auto; display: flex; gap: 40px; align-items: center; }
+    .hero-text { flex: 1; }
+    .badge { display: inline-block; background: var(--teal-50); color: var(--teal-600); border: 1px solid var(--teal-200); border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-bottom: 16px; }
+    .hero h1 { font-size: 32px; font-weight: 700; line-height: 1.25; margin-bottom: 14px; }
+    .hero h1 span { color: var(--teal-400); }
+    .hero p { font-size: 15px; color: var(--muted); margin-bottom: 24px; max-width: 480px; }
+    .hero-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-primary { background: var(--teal-400); color: white; border: none; border-radius: var(--radius-sm); padding: 11px 22px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background .2s; }
+    .btn-primary:hover { background: var(--teal-600); }
+    .btn-outline { background: transparent; color: var(--teal-600); border: 1.5px solid var(--teal-400); border-radius: var(--radius-sm); padding: 11px 22px; font-size: 14px; cursor: pointer; transition: all .2s; }
+    .btn-outline:hover { background: var(--teal-50); }
+    .hero-card { flex: 0 0 200px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .avatar { width: 68px; height: 68px; border-radius: 50%; background: var(--teal-50); border: 3px solid var(--teal-200); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 30px; }
+    .hero-card h3 { font-size: 14px; font-weight: 600; }
+    .hero-card p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .stars { color: var(--teal-400); margin-top: 6px; }
+    .hero-stats { display: flex; gap: 10px; margin-top: 14px; }
+    .stat { flex: 1; background: var(--teal-50); border-radius: var(--radius-sm); padding: 8px 4px; text-align: center; }
+    .stat-n { font-size: 14px; font-weight: 700; color: var(--teal-600); }
+    .stat-l { font-size: 10px; color: var(--teal-600); }
+
+    /* SECTIONS */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 48px 0; }
+    section + section { border-top: 1px solid var(--border); }
+    .sec-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .sec-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+
+    /* SERVICES */
+    .svcs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+    .svc-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; transition: box-shadow .2s; }
+    .svc-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .svc-icon { font-size: 26px; margin-bottom: 10px; }
+    .svc-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .svc-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .svc-price { margin-top: 10px; font-size: 13px; color: var(--teal-600); font-weight: 600; }
+
+    /* TURNERO */
+    #turnos { background: var(--bg); }
+    .turnero-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .turnero-grid { display: grid; grid-template-columns: 1fr 1fr; }
+
+    /* CALENDAR */
+    .cal-panel { padding: 24px; border-right: 1px solid var(--border); }
+    .cal-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .cal-hdr h3 { font-size: 15px; font-weight: 600; }
+    .cal-nav { display: flex; gap: 6px; }
+    .cal-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); width: 30px; height: 30px; cursor: pointer; font-size: 14px; color: var(--muted); transition: all .15s; }
+    .cal-btn:hover { background: var(--bg); }
+    .dow-hdr { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; margin-bottom: 6px; }
+    .dow-hdr span { font-size: 11px; color: var(--muted); font-weight: 600; padding: 4px 0; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+    .cday { aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:13px; border-radius:var(--radius-sm); cursor:pointer; color:var(--muted); border:1px solid transparent; transition:all .12s; position:relative; }
+    .cday.empty, .cday.past, .cday.weekend { color: var(--gray-100); cursor:default; }
+    .cday.avail:hover { background:var(--teal-50); color:var(--teal-600); border-color:var(--teal-200); }
+    .cday.avail::after { content:''; width:4px; height:4px; background:var(--teal-400); border-radius:50%; position:absolute; bottom:3px; left:50%; transform:translateX(-50%); }
+    .cday.selected { background:var(--teal-400); color:white; border-color:var(--teal-400); }
+    .cday.selected::after { background:white; }
+    .cday.today { font-weight:700; color:var(--teal-600); }
+
+    /* SLOTS */
+    .slots-panel { padding: 24px; }
+    .slots-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
+    .no-sel { font-size: 13px; color: var(--muted); padding: 12px 0; }
+    .sel-badge { display:inline-block; background:var(--teal-50); color:var(--teal-600); border:1px solid var(--teal-200); border-radius:var(--radius-sm); padding:5px 12px; font-size:13px; margin-bottom:14px; }
+    .slots-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:16px; }
+    .slot-btn { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 4px; font-size:12px; cursor:pointer; text-align:center; color:var(--muted); transition:all .12s; }
+    .slot-btn:hover { background:var(--teal-50); color:var(--teal-600); border-color:var(--teal-200); }
+    .slot-btn.sel { background:var(--teal-400); color:white; border-color:var(--teal-400); }
+    .slot-btn.occ { background:var(--bg); color:var(--gray-100); cursor:default; text-decoration:line-through; }
+
+    /* FORM */
+    .booking-form { display:none; }
+    .form-row { display:flex; gap:10px; margin-bottom:10px; }
+    .form-row .fg { flex:1; }
+    .fg { margin-bottom:10px; }
+    .fg label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; font-weight:500; }
+    .fg input, .fg select { width:100%; border:1px solid var(--border); border-radius:var(--radius-sm); padding:9px 12px; font-size:13px; background:var(--white); color:var(--text); transition:border .2s; }
+    .fg input:focus, .fg select:focus { outline:none; border-color:var(--teal-400); }
+    .btn-confirm { width:100%; background:var(--teal-400); color:white; border:none; border-radius:var(--radius-sm); padding:11px; font-size:14px; font-weight:500; cursor:pointer; margin-top:4px; transition:background .2s; }
+    .btn-confirm:hover { background:var(--teal-600); }
+    .btn-confirm:disabled { background:var(--gray-100); cursor:default; }
+
+    /* SUCCESS / ERROR */
+    .success-box { display:none; background:var(--teal-50); border:1px solid var(--teal-200); border-radius:var(--radius); padding:18px; text-align:center; }
+    .success-box h4 { color:var(--teal-600); font-size:16px; margin-bottom:8px; }
+    .success-box p { font-size:13px; color:var(--teal-600); line-height:1.7; }
+    .error-msg { background:#fef2f2; border:1px solid #fca5a5; border-radius:var(--radius-sm); padding:10px 14px; font-size:13px; color:#dc2626; margin-bottom:10px; display:none; }
+    .loading-msg { font-size:13px; color:var(--muted); padding:8px 0; display:none; }
+
+    /* ADMIN PANEL */
+    .admin-toggle { text-align:right; margin-bottom:12px; }
+    .admin-toggle a { font-size:12px; color:var(--muted); cursor:pointer; }
+    #admin-panel { display:none; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-top:24px; }
+    #admin-panel h3 { font-size:16px; font-weight:600; margin-bottom:14px; }
+    .admin-login { display:flex; gap:8px; margin-bottom:16px; }
+    .admin-login input { flex:1; border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 12px; font-size:13px; }
+    .admin-list { display:flex; flex-direction:column; gap:8px; max-height:320px; overflow-y:auto; }
+    .admin-item { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 16px; display:flex; justify-content:space-between; align-items:center; }
+    .admin-item-info h4 { font-size:13px; font-weight:600; }
+    .admin-item-info p { font-size:12px; color:var(--muted); margin-top:2px; }
+    .admin-item-time { text-align:right; }
+    .admin-item-time .time { font-size:14px; font-weight:600; color:var(--teal-600); }
+    .admin-item-time .date { font-size:11px; color:var(--muted); }
+    .admin-empty { font-size:13px; color:var(--muted); text-align:center; padding:20px; }
+    .admin-filter { display:flex; gap:8px; margin-bottom:14px; align-items:center; }
+    .admin-filter label { font-size:13px; color:var(--muted); }
+    .admin-filter input { border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px 10px; font-size:13px; }
+    .admin-stats { display:flex; gap:10px; margin-bottom:16px; }
+    .admin-stat { flex:1; background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; text-align:center; }
+    .admin-stat-n { font-size:20px; font-weight:700; color:var(--teal-600); }
+    .admin-stat-l { font-size:11px; color:var(--muted); margin-top:2px; }
+    .badge-tipo { display:inline-block; background:var(--teal-50); color:var(--teal-600); border-radius:20px; padding:2px 8px; font-size:11px; margin-top:3px; }
+
+    /* INFO */
+    .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+    .info-block h4 { font-size:15px; font-weight:600; margin-bottom:14px; }
+    .info-row { display:flex; gap:10px; margin-bottom:12px; align-items:flex-start; }
+    .info-icon { font-size:16px; flex-shrink:0; }
+    .info-row p { font-size:14px; color:var(--muted); line-height:1.5; }
+    .info-row strong { color:var(--text); }
+
+    footer { background:var(--white); border-top:1px solid var(--border); padding:20px 24px; }
+    .footer-inner { max-width:960px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+    footer p { font-size:13px; color:var(--muted); }
+    .foot-links { display:flex; gap:16px; }
+    .foot-links a { font-size:13px; color:var(--muted); text-decoration:none; }
+    .foot-links a:hover { color:var(--teal-600); }
+
+    @media(max-width:640px){
+      .hero{flex-direction:column;padding:32px 20px}
+      .hero-card{flex:unset;width:100%}
+      .turnero-grid{grid-template-columns:1fr}
+      .cal-panel{border-right:none;border-bottom:1px solid var(--border)}
+      .info-grid{grid-template-columns:1fr}
+      .nav-links{display:none}
+      .slots-grid{grid-template-columns:repeat(3,1fr)}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#">
+    <div class="logo-icon">🦷</div>
+    Dra. Jimenez · Ortodoncia
+  </a>
+  <div class="nav-links">
+    <a href="#servicios">Servicios</a>
+    <a href="#turnos">Turnos</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <button class="btn-nav" onclick="document.getElementById('turnos').scrollIntoView({behavior:'smooth'})">Pedir turno</button>
+</nav>
+
+<!-- HERO -->
+<div style="background:linear-gradient(135deg,#E1F5EE 0%,#fff 70%)">
+  <div class="hero">
+    <div class="hero-text">
+      <span class="badge">✦ Ortodoncia especializada · CABA</span>
+      <h1>Tu <span>sonrisa perfecta</span><br>empieza aquí</h1>
+      <p>Atención personalizada en brackets y alineadores invisibles. Consultorio en el corazón de Buenos Aires, turnos de lunes a viernes.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="document.getElementById('turnos').scrollIntoView({behavior:'smooth'})">Reservar turno</button>
+        <button class="btn-outline" onclick="document.getElementById('servicios').scrollIntoView({behavior:'smooth'})">Ver tratamientos</button>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="avatar">👩‍⚕️</div>
+      <h3>Dra. Jennyfer Jimenez</h3>
+      <p>Especialista en Ortodoncia</p>
+      <div class="stars">★★★★★</div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">+600</div><div class="stat-l">pacientes</div></div>
+        <div class="stat"><div class="stat-n">Lun–Vie</div><div class="stat-l">10–18 hs</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<div class="container">
+  <section id="servicios">
+    <h2 class="sec-title">Tratamientos</h2>
+    <p class="sec-sub">Soluciones para cada necesidad y etapa de vida</p>
+    <div class="svcs-grid">
+      <div class="svc-card"><div class="svc-icon">🦷</div><h4>Brackets metálicos</h4><p>Tratamiento clásico y efectivo para todo tipo de maloclusiones.</p><div class="svc-price">Consultar precio</div></div>
+      <div class="svc-card"><div class="svc-icon">💎</div><h4>Alineadores invisibles</h4><p>Ortodoncia estética sin brackets. Cómodos y removibles.</p><div class="svc-price">Consultar precio</div></div>
+      <div class="svc-card"><div class="svc-icon">🔬</div><h4>Consulta inicial</h4><p>Diagnóstico completo con plan de tratamiento personalizado.</p><div class="svc-price">Consultar precio</div></div>
+      <div class="svc-card"><div class="svc-icon">👶</div><h4>Ortodoncia infantil</h4><p>Guía del crecimiento dental desde los 7 años.</p><div class="svc-price">Consultar precio</div></div>
+    </div>
+  </section>
+
+  <!-- TURNOS -->
+  <section id="turnos">
+    <h2 class="sec-title">Reservá tu turno</h2>
+    <p class="sec-sub">Disponibilidad de lunes a viernes, 10:00 a 18:00 hs</p>
+    <div class="turnero-wrap">
+      <div class="turnero-grid">
+        <!-- CALENDAR -->
+        <div class="cal-panel">
+          <div class="cal-hdr">
+            <h3 id="cal-label">—</h3>
+            <div class="cal-nav">
+              <button class="cal-btn" onclick="chMonth(-1)">‹</button>
+              <button class="cal-btn" onclick="chMonth(1)">›</button>
+            </div>
+          </div>
+          <div class="dow-hdr"><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span></div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <!-- SLOTS + FORM -->
+        <div class="slots-panel">
+          <div class="slots-title">Horarios disponibles</div>
+          <div class="no-sel" id="no-sel">← Seleccioná una fecha en el calendario</div>
+          <div class="sel-badge" id="sel-badge" style="display:none"></div>
+          <div class="slots-grid" id="slots-grid" style="display:none"></div>
+          <div class="error-msg" id="error-msg"></div>
+          <div class="loading-msg" id="loading-msg">Guardando turno...</div>
+          <div class="booking-form" id="booking-form">
+            <div class="fg"><label>Nombre completo</label><input id="f-nom" type="text" placeholder="Ej. María López"></div>
+            <div class="form-row">
+              <div class="fg"><label>Teléfono</label><input id="f-tel" type="tel" placeholder="11-1234-5678"></div>
+              <div class="fg"><label>Email</label><input id="f-email" type="email" placeholder="tu@email.com"></div>
+            </div>
+            <div class="fg"><label>Tratamiento</label>
+              <select id="f-tipo">
+                <option>Consulta inicial</option>
+                <option>Control brackets</option>
+                <option>Alineadores invisibles</option>
+                <option>Ortodoncia infantil</option>
+              </select>
+            </div>
+            <button class="btn-confirm" id="btn-confirm" onclick="confirmar()">Confirmar turno</button>
+          </div>
+          <div class="success-box" id="success-box">
+            <h4>✓ ¡Turno confirmado!</h4>
+            <p id="suc-detail"></p>
+            <button class="btn-outline" style="margin-top:12px;font-size:13px" onclick="resetForm()">Reservar otro turno</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="admin-toggle"><a onclick="toggleAdmin()">Panel profesional</a></div>
+    <div id="admin-panel">
+      <h3>Panel de turnos</h3>
+      <div id="admin-login-area">
+        <div class="admin-login">
+          <input type="password" id="admin-pass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')adminLogin()">
+          <button class="btn-primary" onclick="adminLogin()">Ingresar</button>
+        </div>
+        <p style="font-size:12px;color:var(--muted)">Acceso exclusivo para la Dra. Jimenez</p>
+      </div>
+      <div id="admin-content" style="display:none">
+        <div class="admin-stats">
+          <div class="admin-stat"><div class="admin-stat-n" id="stat-hoy">—</div><div class="admin-stat-l">Turnos hoy</div></div>
+          <div class="admin-stat"><div class="admin-stat-n" id="stat-semana">—</div><div class="admin-stat-l">Esta semana</div></div>
+          <div class="admin-stat"><div class="admin-stat-n" id="stat-total">—</div><div class="admin-stat-l">Total</div></div>
+        </div>
+        <div class="admin-filter">
+          <label>Filtrar por fecha:</label>
+          <input type="date" id="admin-date-filter" oninput="loadTurnos()">
+          <button class="btn-outline" style="padding:6px 12px;font-size:13px" onclick="document.getElementById('admin-date-filter').value='';loadTurnos()">Ver todos</button>
+        </div>
+        <div class="admin-list" id="admin-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <h2 class="sec-title">Contacto</h2>
+    <p class="sec-sub">Estamos para ayudarte</p>
+    <div class="info-grid">
+      <div class="info-block">
+        <h4>Información del consultorio</h4>
+        <div class="info-row"><span class="info-icon">📍</span><p><strong>Libertad 431, CABA</strong><br>Buenos Aires, Argentina</p></div>
+        <div class="info-row"><span class="info-icon">🕐</span><p><strong>Lunes a Viernes</strong><br>10:00 a 18:00 hs</p></div>
+        <div class="info-row"><span class="info-icon">📱</span><p>Contactanos por <strong>WhatsApp</strong><br>o llamada directa</p></div>
+        <div class="info-row"><span class="info-icon">📧</span><p>También por <strong>email</strong><br>para consultas sin turno</p></div>
+      </div>
+      <div class="info-block">
+        <h4>¿Por qué elegirnos?</h4>
+        <div class="info-row"><span class="info-icon">✅</span><p>Atención personalizada y seguimiento continuo</p></div>
+        <div class="info-row"><span class="info-icon">✅</span><p>Tecnología de última generación</p></div>
+        <div class="info-row"><span class="info-icon">✅</span><p>Planes de pago en cuotas sin interés</p></div>
+        <div class="info-row"><span class="info-icon">✅</span><p>Cobertura de obra social y prepaga</p></div>
+        <div class="info-row"><span class="info-icon">✅</span><p>Turno online 24/7</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <p>© 2025 · Dra. Jennyfer Jimenez · Libertad 431, CABA</p>
+    <div class="foot-links">
+      <a href="#">Instagram</a>
+      <a href="#">WhatsApp</a>
+      <a href="#">Google Maps</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────
+const SUPABASE_URL = 'https://udujbkbbaouqhgkscppo.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_y7H6ZCXyrl-TgMWdjtN0wg_LnxGQet_';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── CALENDAR ─────────────────────────────────────────────
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const today = new Date();
+let vy = today.getFullYear(), vm = today.getMonth();
+let selDay = null, selSlot = null;
+
+function isWeekday(y,m,d){ const w=new Date(y,m,d).getDay(); return w>=1&&w<=5; }
+function isPast(y,m,d){ return new Date(y,m,d) < new Date(today.getFullYear(),today.getMonth(),today.getDate()); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function toISO(y,m,d){ return `${y}-${pad(m+1)}-${pad(d)}`; }
+
+function renderCal(){
+  document.getElementById('cal-label').textContent = MONTHS[vm]+' '+vy;
+  const g = document.getElementById('cal-grid'); g.innerHTML='';
+  let first = new Date(vy,vm,1).getDay();
+  const off = first===0?6:first-1;
+  const dim = new Date(vy,vm+1,0).getDate();
+  for(let i=0;i<off;i++){const e=document.createElement('div');e.className='cday empty';g.appendChild(e);}
+  for(let d=1;d<=dim;d++){
+    const e=document.createElement('div');
+    const past=isPast(vy,vm,d), wday=isWeekday(vy,vm,d);
+    const isTod=d===today.getDate()&&vm===today.getMonth()&&vy===today.getFullYear();
+    const isSel=selDay&&selDay.d===d&&selDay.m===vm&&selDay.y===vy;
+    let cls='cday';
+    if(past||!wday) cls+=(wday?' past':' weekend');
+    else cls+=' avail';
+    if(isTod&&!past) cls+=' today';
+    if(isSel) cls+=' selected';
+    e.className=cls; e.textContent=d;
+    if(!past&&wday) e.onclick=()=>pickDay(d,vm,vy);
+    g.appendChild(e);
+  }
+}
+
+function chMonth(dir){
+  vm+=dir; if(vm>11){vm=0;vy++;} if(vm<0){vm=11;vy--;}
+  renderCal();
+}
+
+function allSlots(){
+  return['10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30',
+         '14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+}
+
+async function pickDay(d,m,y){
+  selDay={d,m,y}; selSlot=null; renderCal();
+  const dateStr=toISO(y,m,d);
+  document.getElementById('sel-badge').textContent=d+' de '+MONTHS[m]+' '+y;
+  document.getElementById('sel-badge').style.display='inline-block';
+  document.getElementById('no-sel').style.display='none';
+  document.getElementById('success-box').style.display='none';
+  document.getElementById('booking-form').style.display='none';
+  document.getElementById('error-msg').style.display='none';
+
+  // Fetch occupied slots from Supabase
+  const sg=document.getElementById('slots-grid');
+  sg.innerHTML='<span style="font-size:13px;color:var(--muted)">Cargando...</span>';
+  sg.style.display='grid';
+
+  const {data,error}=await sb.from('turnos').select('hora').eq('fecha',dateStr).eq('estado','confirmado');
+  const taken=(data||[]).map(r=>r.hora);
+
+  sg.innerHTML='';
+  allSlots().forEach(s=>{
+    const btn=document.createElement('div');
+    const occ=taken.includes(s);
+    btn.className='slot-btn'+(occ?' occ':'');
+    btn.textContent=s;
+    if(!occ) btn.onclick=()=>pickSlot(s,btn);
+    sg.appendChild(btn);
+  });
+}
+
+function pickSlot(s,btn){
+  selSlot=s;
+  document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('booking-form').style.display='block';
+  document.getElementById('error-msg').style.display='none';
+}
+
+async function confirmar(){
+  const nom=document.getElementById('f-nom').value.trim();
+  const tel=document.getElementById('f-tel').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  const tipo=document.getElementById('f-tipo').value;
+  const errEl=document.getElementById('error-msg');
+
+  if(!nom||!tel){errEl.textContent='Por favor completá nombre y teléfono.';errEl.style.display='block';return;}
+  if(!selDay||!selSlot){errEl.textContent='Seleccioná fecha y horario.';errEl.style.display='block';return;}
+
+  const btn=document.getElementById('btn-confirm');
+  btn.disabled=true; btn.textContent='Guardando...';
+  document.getElementById('loading-msg').style.display='block';
+  errEl.style.display='none';
+
+  const {error}=await sb.from('turnos').insert({
+    fecha: toISO(selDay.y,selDay.m,selDay.d),
+    hora: selSlot,
+    nombre: nom,
+    telefono: tel,
+    email: email||null,
+    tratamiento: tipo,
+    estado: 'confirmado'
+  });
+
+  btn.disabled=false; btn.textContent='Confirmar turno';
+  document.getElementById('loading-msg').style.display='none';
+
+  if(error){
+    errEl.textContent='Error al guardar el turno. Por favor intentá de nuevo.';
+    errEl.style.display='block';
+    return;
+  }
+
+  document.getElementById('suc-detail').innerHTML=
+    `<strong>${nom}</strong><br>${tipo}<br>`+
+    `${selDay.d} de ${MONTHS[selDay.m]} a las ${selSlot}<br>`+
+    `Te contactaremos al ${tel} para confirmar.`;
+  document.getElementById('booking-form').style.display='none';
+  document.getElementById('slots-grid').style.display='none';
+  document.getElementById('sel-badge').style.display='none';
+  document.getElementById('success-box').style.display='block';
+  selSlot=null; selDay=null; renderCal();
+}
+
+function resetForm(){
+  document.getElementById('success-box').style.display='none';
+  document.getElementById('no-sel').style.display='block';
+  document.getElementById('booking-form').style.display='none';
+  document.getElementById('slots-grid').style.display='none';
+  document.getElementById('sel-badge').style.display='none';
+  document.getElementById('f-nom').value='';
+  document.getElementById('f-tel').value='';
+  document.getElementById('f-email').value='';
+  selSlot=null; selDay=null; renderCal();
+}
+
+// ── ADMIN ─────────────────────────────────────────────────
+const ADMIN_PASS = 'jimenez2025'; // Cambiá esta contraseña
+
+function toggleAdmin(){
+  const p=document.getElementById('admin-panel');
+  p.style.display=p.style.display==='none'?'block':'none';
+}
+
+function adminLogin(){
+  const pass=document.getElementById('admin-pass').value;
+  if(pass===ADMIN_PASS){
+    document.getElementById('admin-login-area').style.display='none';
+    document.getElementById('admin-content').style.display='block';
+    loadTurnos();
+  } else {
+    alert('Contraseña incorrecta');
+  }
+}
+
+async function loadTurnos(){
+  const list=document.getElementById('admin-list');
+  list.innerHTML='<div class="admin-empty">Cargando...</div>';
+  const dateFilter=document.getElementById('admin-date-filter').value;
+
+  let query=sb.from('turnos').select('*').eq('estado','confirmado').order('fecha').order('hora');
+  if(dateFilter) query=query.eq('fecha',dateFilter);
+
+  const {data,error}=await query;
+  if(error){list.innerHTML='<div class="admin-empty">Error al cargar turnos.</div>';return;}
+  if(!data||data.length===0){list.innerHTML='<div class="admin-empty">No hay turnos para mostrar.</div>';return;}
+
+  // Stats
+  const todayISO=toISO(today.getFullYear(),today.getMonth(),today.getDate());
+  const startWeek=new Date(today); startWeek.setDate(today.getDate()-today.getDay()+1);
+  const endWeek=new Date(startWeek); endWeek.setDate(startWeek.getDate()+6);
+
+  const hoy=data.filter(t=>t.fecha===todayISO).length;
+  const semana=data.filter(t=>{ const d=new Date(t.fecha); return d>=startWeek&&d<=endWeek; }).length;
+  document.getElementById('stat-hoy').textContent=hoy;
+  document.getElementById('stat-semana').textContent=semana;
+  document.getElementById('stat-total').textContent=data.length;
+
+  list.innerHTML='';
+  data.forEach(t=>{
+    const d=new Date(t.fecha+'T12:00:00');
+    const dateStr=`${d.getDate()} de ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+    const el=document.createElement('div');
+    el.className='admin-item';
+    el.innerHTML=`
+      <div class="admin-item-info">
+        <h4>${t.nombre}</h4>
+        <p>${t.telefono}${t.email?' · '+t.email:''}</p>
+        <span class="badge-tipo">${t.tratamiento}</span>
+      </div>
+      <div class="admin-item-time">
+        <div class="time">${t.hora}</div>
+        <div class="date">${dateStr}</div>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+renderCal();
+</script>
+</body>
+</html>
