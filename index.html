@@ -263,6 +263,8 @@
                 <option>Blanqueamiento dental</option>
               <option>Control general</option>
               <option>Endodoncia</option>
+  <option>Limpieza dental</option>
+                <option>Odontología pediátrica</option>
               </select>
             </div>
             <button class="btn-confirm" id="btn-confirm" onclick="confirmar()">Confirmar turno</button>
@@ -531,6 +533,7 @@ async function adminLogin(){
 
 async function adminLogout(){
   await sb.auth.signOut();
+  document.getElementById('admin-email').value='';
   showAdmin(false);
 }
 
