@@ -124,7 +124,7 @@
     .admin-toggle a { font-size:12px; color:var(--muted); cursor:pointer; }
     #admin-panel { display:none; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-top:24px; }
     #admin-panel h3 { font-size:16px; font-weight:600; margin-bottom:14px; }
-    .admin-login { display:flex; gap:8px; margin-bottom:16px; }
+    .admin-login { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
     .admin-login input { flex:1; border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 12px; font-size:13px; }
     .admin-list { display:flex; flex-direction:column; gap:8px; max-height:320px; overflow-y:auto; }
     .admin-item { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 16px; display:flex; justify-content:space-between; align-items:center; }
@@ -279,12 +279,15 @@
       <h3>Panel de turnos</h3>
       <div id="admin-login-area">
         <div class="admin-login">
-          <input type="password" id="admin-pass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')adminLogin()">
+          <input type="email" id="admin-email" placeholder="Email" autocomplete="username">
+          <input type="password" id="admin-pass" placeholder="Contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter')adminLogin()">
           <button class="btn-primary" onclick="adminLogin()">Ingresar</button>
         </div>
+        <p id="admin-error" style="font-size:12px;color:#dc2626;display:none;margin-bottom:6px"></p>
         <p style="font-size:12px;color:var(--muted)">Acceso exclusivo para la Dra. Jimenez</p>
       </div>
       <div id="admin-content" style="display:none">
+        <div style="text-align:right;margin-bottom:10px"><button class="btn-outline" style="padding:5px 12px;font-size:12px" onclick="adminLogout()">Cerrar sesión</button></div>
         <div class="admin-stats">
           <div class="admin-stat"><div class="admin-stat-n" id="stat-hoy">—</div><div class="admin-stat-l">Turnos hoy</div></div>
           <div class="admin-stat"><div class="admin-stat-n" id="stat-semana">—</div><div class="admin-stat-l">Esta semana</div></div>
@@ -400,7 +403,15 @@ async function pickDay(d,m,y){
   sg.innerHTML='<span style="font-size:13px;color:var(--muted)">Cargando...</span>';
   sg.style.display='grid';
 
-  const {data,error}=await sb.from('turnos').select('hora').eq('fecha',dateStr).eq('estado','confirmado');
+  // La función horas_ocupadas devuelve solo las horas, sin datos de pacientes
+  const {data,error}=await sb.rpc('horas_ocupadas',{p_fecha:dateStr});
+  if(error){
+    sg.style.display='none';
+    const errEl=document.getElementById('error-msg');
+    errEl.textContent='No pudimos cargar los horarios. Por favor intentá de nuevo en unos minutos.';
+    errEl.style.display='block';
+    return;
+  }
   const taken=(data||[]).map(r=>r.hora);
 
   sg.innerHTML='';
@@ -451,15 +462,21 @@ async function confirmar(){
   document.getElementById('loading-msg').style.display='none';
 
   if(error){
+    if(error.code==='23505'){
+      await pickDay(selDay.d,selDay.m,selDay.y); // recargar horarios
+      errEl.textContent='Ese horario acaba de ser reservado por otra persona. Elegí otro, por favor.';
+      errEl.style.display='block';
+      return;
+    }
     errEl.textContent='Error al guardar el turno. Por favor intentá de nuevo.';
     errEl.style.display='block';
     return;
   }
 
   document.getElementById('suc-detail').innerHTML=
-    `<strong>${nom}</strong><br>${tipo}<br>`+
+    `<strong>${esc(nom)}</strong><br>${esc(tipo)}<br>`+
     `${selDay.d} de ${MONTHS[selDay.m]} a las ${selSlot}<br>`+
-    `Te contactaremos al ${tel} para confirmar.`;
+    `Te contactaremos al ${esc(tel)} para confirmar.`;
   document.getElementById('booking-form').style.display='none';
   document.getElementById('slots-grid').style.display='none';
   document.getElementById('sel-badge').style.display='none';
@@ -480,23 +497,42 @@ function resetForm(){
 }
 
 // ── ADMIN ─────────────────────────────────────────────────
-const ADMIN_PASS = 'JJimenez2026!';
+// Escapa texto antes de mostrarlo como HTML (los datos los escribe el público)
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 function toggleAdmin(){
   const p=document.getElementById('admin-panel');
   p.style.display=p.style.display==='none'?'block':'none';
 }
 
-function adminLogin(){
-  const pass=document.getElementById('admin-pass').value;
-  if(pass===ADMIN_PASS){
-    document.getElementById('admin-login-area').style.display='none';
-    document.getElementById('admin-content').style.display='block';
-    loadTurnos();
-  } else {
-    alert('Contraseña incorrecta');
-  }
+function showAdmin(logged){
+  document.getElementById('admin-login-area').style.display=logged?'none':'block';
+  document.getElementById('admin-content').style.display=logged?'block':'none';
+  if(logged) loadTurnos();
 }
+
+// Login real con Supabase Auth: la doctora tiene un usuario creado en Supabase
+async function adminLogin(){
+  const email=document.getElementById('admin-email').value.trim();
+  const pass=document.getElementById('admin-pass').value;
+  const errEl=document.getElementById('admin-error');
+  errEl.style.display='none';
+  if(!email||!pass){errEl.textContent='Ingresá email y contraseña.';errEl.style.display='block';return;}
+  const {error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){errEl.textContent='Email o contraseña incorrectos.';errEl.style.display='block';return;}
+  document.getElementById('admin-pass').value='';
+  showAdmin(true);
+}
+
+async function adminLogout(){
+  await sb.auth.signOut();
+  showAdmin(false);
+}
+
+// Si ya había una sesión iniciada, entrar directo
+sb.auth.getSession().then(({data})=>{ if(data&&data.session) showAdmin(true); });
 
 async function loadTurnos(){
   const list=document.getElementById('admin-list');
@@ -529,12 +565,12 @@ async function loadTurnos(){
     el.className='admin-item';
     el.innerHTML=`
       <div class="admin-item-info">
-        <h4>${t.nombre}</h4>
-        <p>${t.telefono}${t.email?' · '+t.email:''}</p>
-        <span class="badge-tipo">${t.tratamiento}</span>
+        <h4>${esc(t.nombre)}</h4>
+        <p>${esc(t.telefono)}${t.email?' · '+esc(t.email):''}</p>
+        <span class="badge-tipo">${esc(t.tratamiento)}</span>
       </div>
       <div class="admin-item-time">
-        <div class="time">${t.hora}</div>
+        <div class="time">${esc(t.hora)}</div>
         <div class="date">${dateStr}</div>
       </div>`;
     list.appendChild(el);
