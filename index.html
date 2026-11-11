@@ -317,7 +317,7 @@
         <h4>Información del consultorio</h4>
         <div class="info-row"><span class="info-icon">📍</span><p><strong>Libertad 431, CABA</strong><br>Buenos Aires, Argentina</p></div>
         <div class="info-row"><span class="info-icon">🕐</span><p><strong>Lunes a Viernes</strong><br>10:00 a 18:00 hs</p></div>
-        <div class="info-row"><span class="info-icon">📱</span><p>Contactanos por <strong>WhatsApp</strong><br>o llamada directa</p></div>
+        <div class="info-row"><span class="info-icon">📱</span><p>Contactanos por <strong><a href="https://wa.me/5491168004830" target="_blank" rel="noopener">WhatsApp</a></strong><br>o llamada directa</p></div>
         <div class="info-row"><span class="info-icon">📧</span><p>También por <strong>email</strong><br>para consultas sin turno</p></div>
       </div>
       <div class="info-block">
@@ -336,9 +336,9 @@
   <div class="footer-inner">
     <p>© 2025 · Dra. Jennyfer Jimenez · Libertad 431, CABA</p>
     <div class="foot-links">
-      <a href="#">Instagram</a>
-      <a href="#">WhatsApp</a>
-      <a href="#">Google Maps</a>
+      <a href="https://www.instagram.com/dra.jennyferjimenez/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://wa.me/5491168004830" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://www.google.com/maps/search/?api=1&query=Libertad+431+CABA" target="_blank" rel="noopener">Google Maps</a>
     </div>
   </div>
 </footer>
@@ -481,7 +481,8 @@ async function confirmar(){
   document.getElementById('suc-detail').innerHTML=
     `<strong>${esc(nom)}</strong><br>${esc(tipo)}<br>`+
     `${selDay.d} de ${MONTHS[selDay.m]} a las ${selSlot}<br>`+
-    `Te contactaremos al ${esc(tel)} para confirmar.`;
+    `Te contactaremos al ${esc(tel)} para confirmar.<br>`+
+    `<a class="btn-primary" style="display:inline-block;margin-top:12px;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/5491168004830?text=${encodeURIComponent('Hola Dra., reservé un turno online para el '+selDay.d+' de '+MONTHS[selDay.m]+' a las '+selSlot+' a nombre de '+nom+'.')}">Avisar por WhatsApp</a>`;
   document.getElementById('booking-form').style.display='none';
   document.getElementById('slots-grid').style.display='none';
   document.getElementById('sel-badge').style.display='none';
