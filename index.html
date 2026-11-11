@@ -158,6 +158,26 @@
     .foot-links a { font-size:13px; color:var(--muted); text-decoration:none; }
     .foot-links a:hover { color:var(--teal-600); }
 
+    /* RESULTADOS */
+    .g-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+    .g-chip { background:var(--white); color:var(--muted); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:13px; cursor:pointer; transition:all .2s; }
+    .g-chip:hover { border-color:var(--teal-200); color:var(--teal-600); }
+    .g-chip.active { background:var(--teal-400); border-color:var(--teal-400); color:white; }
+    .g-grid { column-count:3; column-gap:14px; }
+    .g-item { break-inside:avoid; margin:0 0 14px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+    .g-item.hide { display:none; }
+    .g-btn { display:block; width:100%; padding:0; border:none; background:none; cursor:zoom-in; }
+    .g-btn img { display:block; width:100%; height:auto; }
+    .g-item figcaption { font-size:12px; color:var(--muted); padding:8px 12px; }
+    .g-note { font-size:12px; color:var(--muted); margin-top:6px; }
+    .lb { position:fixed; inset:0; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; z-index:200; padding:16px; }
+    .lb.open { display:flex; }
+    .lb img { max-width:100%; max-height:84vh; border-radius:8px; }
+    .lb-cap { position:absolute; bottom:14px; left:0; right:0; text-align:center; color:white; font-size:14px; padding:0 56px; }
+    .lb-x, .lb-prev, .lb-next { position:absolute; background:rgba(255,255,255,.15); color:white; border:none; border-radius:50%; width:42px; height:42px; font-size:20px; cursor:pointer; }
+    .lb-x { top:14px; right:14px; } .lb-prev { left:12px; top:50%; } .lb-next { right:12px; top:50%; }
+    @media(max-width:900px){ .g-grid{column-count:2} }
+
     @media(max-width:640px){
       .hero{flex-direction:column;padding:32px 20px}
       .hero-card{flex:unset;width:100%}
@@ -178,6 +198,7 @@
   </a>
   <div class="nav-links">
     <a href="#servicios">Servicios</a>
+    <a href="#resultados">Resultados</a>
     <a href="#turnos">Turnos</a>
     <a href="#contacto">Contacto</a>
   </div>
@@ -220,6 +241,22 @@
       <div class="svc-card"><div class="svc-icon">🔬</div><h4>Consulta inicial</h4><p>Diagnóstico completo con plan de tratamiento personalizado.</p><div class="svc-price">Consultar precio</div></div>
       <div class="svc-card"><div class="svc-icon">👶</div><h4>Ortodoncia infantil</h4><p>Guía del crecimiento dental desde los 7 años.</p><div class="svc-price">Consultar precio</div></div>
     </div>
+  </section>
+
+  <!-- RESULTADOS -->
+  <section id="resultados">
+    <h2 class="sec-title">Resultados</h2>
+    <p class="sec-sub">Algunos de los trabajos realizados en el consultorio</p>
+    <div class="g-filters" id="g-filters">
+      <button type="button" class="g-chip active" data-f="todos">Todos</button>
+      <button type="button" class="g-chip" data-f="ortodoncia">Ortodoncia</button>
+      <button type="button" class="g-chip" data-f="blanqueamiento">Blanqueamiento</button>
+      <button type="button" class="g-chip" data-f="encias">Encías</button>
+      <button type="button" class="g-chip" data-f="rehabilitacion">Rehabilitación</button>
+      <button type="button" class="g-chip" data-f="caries">Caries</button>
+    </div>
+    <div class="g-grid" id="g-grid"></div>
+    <p class="g-note">Los resultados pueden variar según cada paciente. Imágenes publicadas con autorización.</p>
   </section>
 
   <!-- TURNOS -->
@@ -540,6 +577,50 @@ async function adminLogout(){
 
 // Si ya había una sesión iniciada, entrar directo
 sb.auth.getSession().then(({data})=>{ if(data&&data.session) showAdmin(true); });
+
+// Galería de resultados: datos [archivo, categoría, título, ancho, alto]
+const GALERIA=[
+['01-ortodoncia-caries','ortodoncia','Ortodoncia y control de caries',1100,1100],
+['02-blanqueamiento-consultorio','blanqueamiento','Blanqueamiento dental en consultorio',619,1100],
+['03-gingivoplastia-brackets','encias','Gingivoplastia durante la ortodoncia',1100,1100],
+['04-zirconio-coronas','rehabilitacion','Rehabilitación protética: coronas de zirconio',1100,1100],
+['05-ortodoncia-lateral','ortodoncia','Inicio de tratamiento de ortodoncia',927,1100],
+['06-ortodoncia-estetica','ortodoncia','Ortodoncia con brackets estéticos',1100,1100],
+['07-ortodoncia-apinamiento','ortodoncia','Inicio de tratamiento de ortodoncia',1100,1100],
+['08-ortodoncia-diastema','ortodoncia','Inicio de tratamiento de ortodoncia',1100,1100],
+['09-blanqueamiento-en-el-dia','blanqueamiento','Blanqueamiento dental en el día',1100,1100],
+['10-blanqueamiento-hombre','blanqueamiento','Blanqueamiento dental',1100,1100],
+['11-blanqueamiento-sonrisa','blanqueamiento','Blanqueamiento dental',1100,1100],
+['12-gingivoplastia-estetica','encias','Gingivoplastia',1074,1064],
+['13-rehabilitacion-corona','rehabilitacion','Rehabilitación de corona',1100,1100],
+['14-blanqueamiento-corona','rehabilitacion','Blanqueamiento + rehabilitación de corona',1100,618],
+['15-caries-molar','caries','Tratamiento de caries',618,1100]
+];
+document.getElementById('g-grid').innerHTML=GALERIA.map(function(g){
+  return '<figure class="g-item" data-cat="'+g[1]+'"><button type="button" class="g-btn" aria-label="Ampliar: '+g[2]+'"><img src="fotos/'+g[0]+'.webp" alt="Antes y después: '+g[2]+'" width="'+g[3]+'" height="'+g[4]+'" loading="lazy"></button><figcaption>'+g[2]+'</figcaption></figure>';
+}).join('');
+
+// Galería de resultados: filtros y vista ampliada
+(function(){
+  const items=[...document.querySelectorAll('.g-item')];
+  const lb=document.createElement('div'); lb.className='lb';
+  lb.innerHTML='<button class="lb-x" aria-label="Cerrar">✕</button><button class="lb-prev" aria-label="Anterior">‹</button><img alt=""><button class="lb-next" aria-label="Siguiente">›</button><div class="lb-cap"></div>';
+  document.body.appendChild(lb);
+  let cur=0;
+  const vis=()=>items.filter(i=>!i.classList.contains('hide'));
+  function show(i){ const v=vis(); if(!v.length) return; cur=(i+v.length)%v.length; const im=v[cur].querySelector('img'); const l=lb.querySelector('img'); l.src=im.src; l.alt=im.alt; lb.querySelector('.lb-cap').textContent=v[cur].querySelector('figcaption').textContent; lb.classList.add('open'); }
+  items.forEach(it=>it.querySelector('.g-btn').addEventListener('click',()=>show(vis().indexOf(it))));
+  lb.querySelector('.lb-x').onclick=()=>lb.classList.remove('open');
+  lb.querySelector('.lb-prev').onclick=e=>{e.stopPropagation();show(cur-1)};
+  lb.querySelector('.lb-next').onclick=e=>{e.stopPropagation();show(cur+1)};
+  lb.addEventListener('click',e=>{ if(e.target===lb) lb.classList.remove('open'); });
+  document.addEventListener('keydown',e=>{ if(!lb.classList.contains('open')) return; if(e.key==='Escape') lb.classList.remove('open'); if(e.key==='ArrowLeft') show(cur-1); if(e.key==='ArrowRight') show(cur+1); });
+  document.getElementById('g-filters').addEventListener('click',e=>{
+    const b=e.target.closest('.g-chip'); if(!b) return;
+    document.querySelectorAll('.g-chip').forEach(c=>c.classList.toggle('active',c===b));
+    items.forEach(i=>i.classList.toggle('hide',b.dataset.f!=='todos'&&i.dataset.cat!==b.dataset.f));
+  });
+})();
 
 async function loadTurnos(){
   const list=document.getElementById('admin-list');
