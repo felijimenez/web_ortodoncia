@@ -3,11 +3,14 @@
 (function () {
   'use strict';
   const TEMAS = {
-    verde:  { n: 'Verde (actual)',  v: { '--teal-50': '#E1F5EE', '--teal-200': '#5DCAA5', '--teal-400': '#1D9E75', '--teal-600': '#0F6E56', '--teal-800': '#085041', '--bg': '#f8f8f6', '--text': '#1a1a18', '--muted': '#6b6b67', '--border': 'rgba(0,0,0,0.1)' } },
-    clasico:{ n: 'A · Rosa clásico', v: { '--teal-50': '#FCE8F0', '--teal-200': '#F4A9C4', '--teal-400': '#C2185B', '--teal-600': '#8E1048', '--teal-800': '#6E0C38', '--bg': '#FFF8FB', '--text': '#2B1B24', '--muted': '#7A6671', '--border': 'rgba(142,16,72,0.14)' } },
-    empolvado:{ n: 'B · Rosa empolvado', v: { '--teal-50': '#FBEFF1', '--teal-200': '#E8B4C0', '--teal-400': '#A64B64', '--teal-600': '#6E2C3E', '--teal-800': '#4F1E2C', '--bg': '#FFF9FA', '--text': '#2D1F23', '--muted': '#6F5C62', '--border': 'rgba(110,44,62,0.14)' } },
-    fucsia: { n: 'C · Fucsia moderno', v: { '--teal-50': '#FFEAF3', '--teal-200': '#FF9CC2', '--teal-400': '#D6246E', '--teal-600': '#9C0F4E', '--teal-800': '#780A3B', '--bg': '#FFF7FB', '--text': '#1F1420', '--muted': '#675563', '--border': 'rgba(156,15,78,0.14)' } },
-    salvia: { n: 'D · Rosa y salvia', v: { '--teal-50': '#FCEEF3', '--teal-200': '#F2B8CE', '--teal-400': '#BE3F73', '--teal-600': '#7F2347', '--teal-800': '#5F1A35', '--bg': '#FFFAFC', '--text': '#2A1D25', '--muted': '#68565F', '--border': 'rgba(127,35,71,0.14)' } }
+    verde: { n: 'Verde (actual)', v: { '--teal-50': '#E1F5EE', '--teal-200': '#5DCAA5', '--teal-400': '#1D9E75', '--teal-600': '#0F6E56', '--teal-800': '#085041', '--bg': '#f8f8f6', '--text': '#1a1a18', '--muted': '#6b6b67', '--border': 'rgba(0,0,0,0.1)' } },
+    salvia: { n: 'Verde salvia', v: { '--teal-50': '#E8F2EC', '--teal-200': '#A9CBBC', '--teal-400': '#3F7260', '--teal-600': '#2B5446', '--teal-800': '#1E3D32', '--bg': '#F8FBF9', '--text': '#1A2420', '--muted': '#5F6E67', '--border': 'rgba(43,84,70,0.14)' } },
+    clasico: { n: 'Rosa clásico', v: { '--teal-50': '#FCE8F0', '--teal-200': '#F4A9C4', '--teal-400': '#C2185B', '--teal-600': '#8E1048', '--teal-800': '#6E0C38', '--bg': '#FFF8FB', '--text': '#2B1B24', '--muted': '#7A6671', '--border': 'rgba(142,16,72,0.14)' } },
+    empolvado: { n: 'Rosa empolvado', v: { '--teal-50': '#FBEFF1', '--teal-200': '#E8B4C0', '--teal-400': '#A64B64', '--teal-600': '#6E2C3E', '--teal-800': '#4F1E2C', '--bg': '#FFF9FA', '--text': '#2D1F23', '--muted': '#6F5C62', '--border': 'rgba(110,44,62,0.14)' } },
+    cielo: { n: 'Azul cielo', v: { '--teal-50': '#E6F1FA', '--teal-200': '#9CC9EC', '--teal-400': '#2272B5', '--teal-600': '#174F80', '--teal-800': '#0F3A60', '--bg': '#F7FAFD', '--text': '#172230', '--muted': '#5A6B7B', '--border': 'rgba(23,79,128,0.14)' } },
+    marino: { n: 'Azul marino', v: { '--teal-50': '#E8EEF9', '--teal-200': '#A9BEE6', '--teal-400': '#1F4E9E', '--teal-600': '#14336B', '--teal-800': '#0D2250', '--bg': '#F8F9FD', '--text': '#141B2E', '--muted': '#5B6479', '--border': 'rgba(20,51,107,0.14)' } },
+    lavanda: { n: 'Lavanda', v: { '--teal-50': '#F1EBF9', '--teal-200': '#CDB8EA', '--teal-400': '#7A52B3', '--teal-600': '#54347F', '--teal-800': '#3C2360', '--bg': '#FBF9FE', '--text': '#231B2E', '--muted': '#685F78', '--border': 'rgba(84,52,127,0.14)' } },
+    coral: { n: 'Coral', v: { '--teal-50': '#FCEDE8', '--teal-200': '#F0B5A5', '--teal-400': '#C4533A', '--teal-600': '#8F3320', '--teal-800': '#6A2314', '--bg': '#FFFAF8', '--text': '#2B1E1A', '--muted': '#735F58', '--border': 'rgba(143,51,32,0.14)' } }
   };
   let actual = 'verde';
 
